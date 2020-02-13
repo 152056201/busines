@@ -7,4 +7,6 @@ public interface UserService {
     public ServerResponse resgister(User user);
 
     ServerResponse login(String username,String password);
+
+    ServerResponse updateInfo(User user);
 }

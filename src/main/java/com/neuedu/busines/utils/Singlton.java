@@ -1,7 +1,8 @@
-package com.neuedu.busines;
+package com.neuedu.busines.utils;
 
 public class Singlton {
     private static volatile Singlton singlton;
+
     private Singlton(){}
 
     public static Singlton getInstance(){

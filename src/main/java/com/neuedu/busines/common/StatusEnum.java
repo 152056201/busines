@@ -12,7 +12,7 @@ public enum StatusEnum {
     RESGISTER_FAILED(8,"注册失败"),
     USER_NOT_EMPTY(9,"用户名为空"),
     PASSWORD_NOT_EMPTY(10,"密码为空"),
-    USER_NOT_EXIST(11,"用户名为空"),
+    USER_NOT_EXIST(11,"用户不存在"),
     ;
     private int code;
 
