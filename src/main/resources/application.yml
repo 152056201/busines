@@ -1,10 +1,10 @@
 spring:
   datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
     url: jdbc:mysql://localhost:3306/business?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: root
     password: yh123
-    type: com.alibaba.druid.pool.DruidDataSource
     initialSize: 5
     minIdle: 5
     maxActive: 20
@@ -17,5 +17,7 @@ spring:
     testOnReturn: false
     poolPreparedStatements: true
 mybatis:
+  config-location: classpath:mybatis-config.xml
   type-aliases-package: com.neuedu.busines.pojo
   mapper-locations: classpath:mapper/*Mapper.xml
+
