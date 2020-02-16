@@ -10,6 +10,7 @@ import com.neuedu.busines.utils.MD5Utils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.Date;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -74,14 +75,23 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ServerResponse updateInfo(User user) {
-        if (user.getUsername() == null && user.getUsername().equals("")) {
-            return ServerResponse.serverResponseByFail(StatusEnum.USER_NOT_EMPTY.getCode(),StatusEnum.USER_NOT_EXIST.getMsg());
+    public ServerResponse updateInfo(String username,String email,
+                                     String phone,
+                                     String question,
+                                     String answer) {
+
+        User user = userMapper.selectByUserName(username);
+        if(user == null){
+            return ServerResponse.serverResponseByFail(StatusEnum.USER_NOT_EXIST.getCode(),StatusEnum.USER_NOT_EXIST.getMsg());
         }
+        user.setEmail(email);
+        user.setPhone(phone);
+        user.setQuestion(question);
+        user.setAnswer(answer);
         int update = userMapper.updateByPrimaryKeySelective(user);
-        if (update>0){
-            return ServerResponse.serverResponseBySucess("更新成功",user);
+        if (update<0){
+            return ServerResponse.serverResponseByFail(StatusEnum.USERINFO_UPDATA_FAIL.getCode(),StatusEnum.USERINFO_UPDATA_FAIL.getMsg());
         }
-        return ServerResponse.serverResponseBySucess();
+        return ServerResponse.serverResponseBySucess("更新成功！",null);
     }
 }

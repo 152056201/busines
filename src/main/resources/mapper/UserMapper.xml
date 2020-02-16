@@ -24,6 +24,12 @@
     from neuedu_user
     where id = #{id,jdbcType=INTEGER}
   </select>
+  <select id="selectByUserName" resultMap="BaseResultMap" parameterType="String" >
+    select
+    <include refid="Base_Column_List" />
+    from neuedu_user
+    where username = #{username,jdbcType=VARCHAR}
+  </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     delete from neuedu_user
     where id = #{id,jdbcType=INTEGER}
@@ -114,9 +120,9 @@
   <update id="updateByPrimaryKeySelective" parameterType="com.neuedu.busines.pojo.User" >
     update neuedu_user
     <set >
-      <if test="username != null" >
+      <!--<if test="username != null" >
         username = #{username,jdbcType=VARCHAR},
-      </if>
+      </if>-->
       <if test="password != null" >
         password = #{password,jdbcType=VARCHAR},
       </if>
@@ -145,7 +151,7 @@
         update_time = #{updateTime,jdbcType=TIMESTAMP},
       </if>
     </set>
-    where id = #{id,jdbcType=INTEGER}
+    where username = #{username,jdbcType=VARCHAR}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.neuedu.busines.pojo.User" >
     update neuedu_user

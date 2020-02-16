@@ -8,5 +8,8 @@ public interface UserService {
 
     ServerResponse login(String username,String password);
 
-    ServerResponse updateInfo(User user);
+    ServerResponse updateInfo(String username,String email,
+                              String phone,
+                              String question,
+                              String answer);
 }

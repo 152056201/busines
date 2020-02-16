@@ -1,7 +1,12 @@
 package com.neuedu.busines.dao;
 
 import com.neuedu.busines.pojo.Category;
+import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
+import java.util.List;
+
+@Mapper
 public interface CategoryMapper {
     int deleteByPrimaryKey(Integer id);
 
@@ -14,4 +19,8 @@ public interface CategoryMapper {
     int updateByPrimaryKeySelective(Category record);
 
     int updateByPrimaryKey(Category record);
+
+    List<Category> selectAll();
+
+    List<Category> getSubCategorysById(@Param("categoryId") Integer categoryId);
 }

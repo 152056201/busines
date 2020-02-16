@@ -21,3 +21,5 @@ mybatis:
   type-aliases-package: com.neuedu.busines.pojo
   mapper-locations: classpath:mapper/*Mapper.xml
 
+upload:
+  path: D:\upload\temp

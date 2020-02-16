@@ -31,7 +31,7 @@ public class ServerResponse<T> {
 
     /**
      *
-     * 当接口调用成功
+     * 当接口调用成功 返回0
      * */
 
     public  static  ServerResponse  serverResponseBySucess(){
