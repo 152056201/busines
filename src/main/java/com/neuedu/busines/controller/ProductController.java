@@ -9,6 +9,7 @@ import com.neuedu.busines.pojo.User;
 import com.neuedu.busines.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -83,9 +84,13 @@ public class ProductController {
     @RequestMapping("/list.do")
     public ServerResponse list(@RequestParam(required = false,defaultValue = "-1") Integer categoryId,
                                @RequestParam(required = false,defaultValue = "")String keyword,
-                               @RequestParam(required = false,defaultValue = "1") Integer pageSize,
+                               @RequestParam(required = false,defaultValue = "0") Integer pageSize,
                                @RequestParam(required = false,defaultValue = "10")Integer pageNum,
                                @RequestParam(required = false,defaultValue = "")String orderby){
         return productService.listProduct(categoryId, keyword, pageSize, pageNum, orderby);
+    }
+    @RequestMapping("/detail.do")
+    public ServerResponse details(Integer id){
+        return productService.productDetails(id);
     }
 }

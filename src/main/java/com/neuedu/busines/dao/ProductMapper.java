@@ -48,5 +48,9 @@ public interface ProductMapper {
      */
     int updateByPrimaryKey(@Param("product") Product product);
 
-    List<Product> findByCategoryIdKeyWord(@Param("categoryIds") List<Integer> categoryIds,@Param("keyword") String keyword);
+    List<Product> findByCategoryIdKeyWord(@Param("categoryIds") List<Integer> categoryIds,
+                                          @Param("keyword") String keyword,
+                                          @Param("pageSize") Integer pageSize,
+                                          @Param("pageNum") Integer pageNum,
+                                          @Param("orderby") String orderby);
 }

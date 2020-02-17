@@ -114,6 +114,18 @@
                 #{categoryIds}
               </foreach>
             </if>
+            order by
+            <if test="orderby!=null">
+                #{orderby}
+            </if>
+            limit
+            <if test="pageSize!=null">
+                #{pageSize},
+            </if>
+            <if test="pageNum!=null">
+                #{pageNum}
+            </if>
+
         </where>
     </select>
 </mapper>

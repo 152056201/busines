@@ -9,7 +9,11 @@ import com.neuedu.busines.pojo.Product;
 import com.neuedu.busines.service.CategoryService;
 import com.neuedu.busines.service.ProductService;
 
+import com.neuedu.busines.utils.DateUtil;
+import com.neuedu.busines.vo.ProductDetailsVo;
+import org.joda.time.DateTimeUtils;
 import org.springframework.stereotype.Service;
+import com.neuedu.busines.vo.ProductVoList;
 
 import javax.annotation.Resource;
 import java.util.*;
@@ -57,10 +61,10 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public ServerResponse listProduct(Integer categoryId, String keyword, Integer pageSize, Integer pageNum, String orderby) {
         if (categoryId == -1 && (keyword == null || keyword.equals(""))) {
-            PageHelper.startPage(pageNum,pageSize);
+            PageHelper.startPage(pageNum, pageSize);
             List<Product> productList = new ArrayList<>();
             PageInfo pageInfo = new PageInfo(productList);
-            return ServerResponse.serverResponseBySucess("",pageInfo);
+            return ServerResponse.serverResponseBySucess("", pageInfo);
         }
 
         List<Integer> listCategoryIds = new ArrayList<>();
@@ -70,7 +74,7 @@ public class ProductServiceImpl implements ProductService {
             if (deepCategory.isSucess()) {
                 Set<Integer> setCategoryIds = deepCategory.getData();
                 Iterator<Integer> iterator = setCategoryIds.iterator();
-                while (iterator.hasNext()){
+                while (iterator.hasNext()) {
                     listCategoryIds.add(iterator.next());
                 }
             }
@@ -79,11 +83,56 @@ public class ProductServiceImpl implements ProductService {
         if (keyword != null && !keyword.equals("")) {
             keyword = "%" + keyword + "%";
         }
-        PageHelper.startPage(pageNum,pageSize);
+        PageHelper.startPage(pageNum, pageSize);
+        if (orderby != null && !orderby.equals("")) {
+            String[] orders = orderby.split("_");
+            orderby = orders[0] + " " + orders[1];
+            PageHelper.orderBy(orderby);
+        }
 
-        List<Product> byCategoryIdKeyWord = productMapper.findByCategoryIdKeyWord(listCategoryIds, keyword);
-        PageInfo pageInfo = new PageInfo(byCategoryIdKeyWord);
+        List<Product> byCategoryIdKeyWord = productMapper.findByCategoryIdKeyWord(listCategoryIds, keyword, pageSize, pageNum, orderby);
+        List<ProductVoList> productVoLists = new ArrayList<>();
+        for (Product p : byCategoryIdKeyWord) {
+            ProductVoList productVoList = new ProductVoList();
+            productVoList.setId(p.getId());
+            productVoList.setName(p.getName());
+            productVoList.setCategoryId(p.getCategoryId());
+            productVoList.setStatus(p.getStatus());
+            productVoList.setPrice(p.getPrice());
+            productVoList.setSubtitle(p.getSubtitle());
+            productVoLists.add(productVoList);
+            productVoList.setMainImages(p.getMainImage());
+        }
+        PageInfo pageInfo = new PageInfo(productVoLists);
+        return ServerResponse.serverResponseBySucess("", pageInfo);
+    }
 
-        return ServerResponse.serverResponseBySucess("",pageInfo);
+    @Override
+    public ServerResponse productDetails(Integer pid) {
+        if (pid == null) {
+            return ServerResponse.serverResponseByFail(StatusEnum.PARAM_NOT_NULL.getCode(), StatusEnum.PARAM_NOT_NULL.getMsg());
+        }
+        Product product = productMapper.selectByPrimaryKey(pid);
+        if (product == null) {
+            return ServerResponse.serverResponseByFail(StatusEnum.PRODUCT_NOT_EXISTS.getCode(), StatusEnum.PRODUCT_NOT_EXISTS.getMsg());
+        }
+        ProductDetailsVo productDetailsVo = productDetailsVo(product);
+        return ServerResponse.serverResponseBySucess("null", productDetailsVo);
+    }
+
+    private ProductDetailsVo productDetailsVo(Product product) {
+        ProductDetailsVo vo = new ProductDetailsVo();
+        vo.setId(product.getId());
+        vo.setCategoryId(product.getCategoryId());
+        vo.setName(product.getName());
+        vo.setMainImage(product.getMainImage());
+        vo.setStatus(product.getStatus());
+        vo.setSubImages(product.getSubImages());
+        vo.setPrice(product.getPrice());
+        vo.setSubtitle(product.getSubtitle());
+        vo.setDetails(product.getDetail());
+        vo.setCreateTime(product.getCreateTime());
+        vo.setUpdateTime(product.getUpdateTime());
+        return vo;
     }
 }
