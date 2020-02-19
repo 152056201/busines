@@ -84,10 +84,10 @@ public class ProductController {
     @RequestMapping("/list.do")
     public ServerResponse list(@RequestParam(required = false,defaultValue = "-1") Integer categoryId,
                                @RequestParam(required = false,defaultValue = "")String keyword,
-                               @RequestParam(required = false,defaultValue = "0") Integer pageSize,
-                               @RequestParam(required = false,defaultValue = "10")Integer pageNum,
+                               @RequestParam(required = false,defaultValue = "1") Integer pageNum,
+                               @RequestParam(required = false,defaultValue = "10")Integer pageSize,
                                @RequestParam(required = false,defaultValue = "")String orderby){
-        return productService.listProduct(categoryId, keyword, pageSize, pageNum, orderby);
+        return productService.listProduct(categoryId, keyword, pageNum, pageSize, orderby);
     }
     @RequestMapping("/detail.do")
     public ServerResponse details(Integer id){

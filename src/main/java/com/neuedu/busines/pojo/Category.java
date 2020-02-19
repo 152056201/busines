@@ -7,8 +7,6 @@ public class Category {
 
     private Integer parentId;
 
-    private String mainImage;
-
     private String name;
 
     private Boolean status;
@@ -33,14 +31,6 @@ public class Category {
 
     public void setParentId(Integer parentId) {
         this.parentId = parentId;
-    }
-
-    public String getMainImage() {
-        return mainImage;
-    }
-
-    public void setMainImage(String mainImage) {
-        this.mainImage = mainImage == null ? null : mainImage.trim();
     }
 
     public String getName() {

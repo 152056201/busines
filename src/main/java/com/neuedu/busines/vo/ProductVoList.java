@@ -9,14 +9,14 @@ public class ProductVoList {
     private String subtitle;
     private Integer status;
     private BigDecimal price;
-    private String mainImages;
+    private String mainImage;
 
-    public String getMainImages() {
-        return mainImages;
+    public String getMainImage() {
+        return mainImage;
     }
 
-    public void setMainImages(String mainImages) {
-        this.mainImages = mainImages;
+    public void setMainImage(String mainImage) {
+        this.mainImage = mainImage;
     }
 
     public Integer getId() {

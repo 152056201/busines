@@ -59,8 +59,9 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public ServerResponse listProduct(Integer categoryId, String keyword, Integer pageSize, Integer pageNum, String orderby) {
+    public ServerResponse listProduct(Integer categoryId, String keyword, Integer pageNum, Integer pageSize, String orderby) {
         if (categoryId == -1 && (keyword == null || keyword.equals(""))) {
+            //pageNum = (pageNum-1)*pageSize;
             PageHelper.startPage(pageNum, pageSize);
             List<Product> productList = new ArrayList<>();
             PageInfo pageInfo = new PageInfo(productList);
@@ -78,7 +79,6 @@ public class ProductServiceImpl implements ProductService {
                     listCategoryIds.add(iterator.next());
                 }
             }
-            System.out.println(listCategoryIds);
         }
         if (keyword != null && !keyword.equals("")) {
             keyword = "%" + keyword + "%";
@@ -101,7 +101,7 @@ public class ProductServiceImpl implements ProductService {
             productVoList.setPrice(p.getPrice());
             productVoList.setSubtitle(p.getSubtitle());
             productVoLists.add(productVoList);
-            productVoList.setMainImages(p.getMainImage());
+            productVoList.setMainImage(p.getMainImage());
         }
         PageInfo pageInfo = new PageInfo(productVoLists);
         return ServerResponse.serverResponseBySucess("", pageInfo);

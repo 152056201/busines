@@ -6,7 +6,7 @@ import com.neuedu.busines.pojo.Product;
 public interface ProductService {
     ServerResponse saveProduct(Product product);
 
-    ServerResponse listProduct(Integer categoryId,String keyword,Integer pageSize,Integer pageNum,String orderby);
+    ServerResponse listProduct(Integer categoryId,String keyword,Integer pageNum,Integer pageSize,String orderby);
 
     ServerResponse productDetails(Integer id);
 }
