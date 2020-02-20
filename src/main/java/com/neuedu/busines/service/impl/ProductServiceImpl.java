@@ -131,6 +131,7 @@ public class ProductServiceImpl implements ProductService {
         vo.setPrice(product.getPrice());
         vo.setSubtitle(product.getSubtitle());
         vo.setDetails(product.getDetail());
+        vo.setCreateTime(product.getCreateTime());
         vo.setUpdateTime(product.getUpdateTime());
         return vo;
     }
