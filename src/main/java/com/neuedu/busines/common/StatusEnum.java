@@ -27,6 +27,8 @@ public enum StatusEnum {
     PRODUCT_ADD_FAIL(107,"商品添加失败"),
     PRODUCT_NOT_EXISTS(108,"该商品不存在"),
     PRODUCT_UPDATE_FAIL(109,"商品更新失败"),
+    PRODUCT_ADD_CART_FAIL(111,"商品添加购物车失败"),
+    PRODUCT_UPDATE_CART_FAIL(112,"更新购物车失败"),
     ;
     private int code;
 
