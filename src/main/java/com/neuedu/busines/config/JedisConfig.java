@@ -29,8 +29,8 @@ public class JedisConfig {
     private String redisHost;
     @Value("${redis.redisPort}")
     private Integer redisPort;
-    @Value("@{redis.redisPassword}")
-    private String redisPassword;
+    /*@Value("@{redis.redisPassword}")
+    private String redisPassword;*/
     @Value("${redis.timeout}")
     private Integer timeout;
     @Bean
@@ -52,7 +52,7 @@ public class JedisConfig {
      */
     @Bean
     public JedisPool jedisPool() {
-        JedisPool jedisPool = new JedisPool(setPoolConfig(),redisHost,redisPort,timeout,redisPassword);
+        JedisPool jedisPool = new JedisPool(setPoolConfig(),redisHost,redisPort,timeout);
         return jedisPool;
     }
 }

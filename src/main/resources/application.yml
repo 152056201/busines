@@ -34,7 +34,6 @@ redis:
   jmxEnabled: true
   redisHost: 123.56.227.4
   redisPort: 6379
-  redisPassword: yuan123
   timeout: 1000
 server:
   port: 8080
