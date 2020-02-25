@@ -67,6 +67,28 @@ public class CartServiceImpl implements CartService {
         }
     }
 
+    @Override
+    public ServerResponse checked(Integer userId) {
+        if (userId == null) {
+            return ServerResponse.serverResponseByFail(StatusEnum.USER_OUT_LOGIN.getCode(), StatusEnum.USER_OUT_LOGIN.getMsg());
+        }
+        List<Cart> cartByUserIdChecked = cartMapper.findCartByUserIdChecked(userId);
+
+        return ServerResponse.serverResponseBySucess(null, cartByUserIdChecked);
+    }
+
+    @Override
+    public ServerResponse deleteBatchCart(List<Cart> cartList) {
+        if (cartList == null || cartList.size() == 0) {
+            return ServerResponse.serverResponseByFail(StatusEnum.PARAM_NOT_NULL.getCode(), StatusEnum.PARAM_NOT_NULL.getMsg());
+        }
+        int i = cartMapper.deleteBatchCart(cartList);
+        if (i <= 0) {
+            return ServerResponse.serverResponseByFail(StatusEnum.CART_CLEAR_FAIL.getCode(),StatusEnum.CART_CLEAR_FAIL.getMsg());
+        }
+        return ServerResponse.serverResponseBySucess();
+    }
+
     private CartVo getCart(Integer userId) {
         CartVo cartVo = new CartVo();
         List<Cart> cartList = cartMapper.findCartByUserid(userId);

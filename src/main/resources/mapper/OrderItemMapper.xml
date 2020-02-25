@@ -15,11 +15,11 @@
     <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
   </resultMap>
   <sql id="Base_Column_List" >
-    id, user_id, order_no, product_id, product_name, product_image, current_unit_price, 
+    id, user_id, order_no, product_id, product_name, product_image, current_unit_price,
     quantity, total_price, create_time, update_time
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
-    select 
+    select
     <include refid="Base_Column_List" />
     from neuedu_order_item
     where id = #{id,jdbcType=INTEGER}
@@ -29,14 +29,28 @@
     where id = #{id,jdbcType=INTEGER}
   </delete>
   <insert id="insert" parameterType="com.neuedu.busines.pojo.OrderItem" >
-    insert into neuedu_order_item (id, user_id, order_no, 
-      product_id, product_name, product_image, 
-      current_unit_price, quantity, total_price, 
+    insert into neuedu_order_item (id, user_id, order_no,
+      product_id, product_name, product_image,
+      current_unit_price, quantity, total_price,
       create_time, update_time)
-    values (#{id,jdbcType=INTEGER}, #{userId,jdbcType=INTEGER}, #{orderNo,jdbcType=BIGINT}, 
-      #{productId,jdbcType=INTEGER}, #{productName,jdbcType=VARCHAR}, #{productImage,jdbcType=VARCHAR}, 
-      #{currentUnitPrice,jdbcType=DECIMAL}, #{quantity,jdbcType=INTEGER}, #{totalPrice,jdbcType=DECIMAL}, 
+    values (#{id,jdbcType=INTEGER}, #{userId,jdbcType=INTEGER}, #{orderNo,jdbcType=BIGINT},
+      #{productId,jdbcType=INTEGER}, #{productName,jdbcType=VARCHAR}, #{productImage,jdbcType=VARCHAR},
+      #{currentUnitPrice,jdbcType=DECIMAL}, #{quantity,jdbcType=INTEGER}, #{totalPrice,jdbcType=DECIMAL},
       #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertBatch" parameterType="list" >
+    insert into neuedu_order (user_id, order_no,
+      shipping_id, payment, payment_type,
+      postage, status, payment_time,
+      send_time, end_time, close_time,
+      create_time, update_time)
+    values
+    <foreach collection="orderItemList" separator="," item="orderItem">
+    (#{orderItem.userId,jdbcType=INTEGER}, #{orderItem.orderNo,jdbcType=BIGINT},
+    #{orderItem.productId,jdbcType=INTEGER}, #{orderItem.productName,jdbcType=VARCHAR}, #{orderItem.productImage,jdbcType=VARCHAR},
+    #{orderItem.currentUnitPrice,jdbcType=DECIMAL}, #{orderItem.quantity,jdbcType=INTEGER}, #{orderItem.totalPrice,jdbcType=DECIMAL},
+    now(),now())
+  </foreach>
   </insert>
   <insert id="insertSelective" parameterType="com.neuedu.busines.pojo.OrderItem" >
     insert into neuedu_order_item

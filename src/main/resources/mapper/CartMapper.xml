@@ -28,8 +28,8 @@
       quantity, checked, create_time,
       update_time)
     values (#{id,jdbcType=INTEGER}, #{userId,jdbcType=INTEGER}, #{productId,jdbcType=INTEGER},
-      #{quantity,jdbcType=INTEGER}, #{checked,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP},
-      #{updateTime,jdbcType=TIMESTAMP})
+      #{quantity,jdbcType=INTEGER}, #{checked,jdbcType=INTEGER}, now(),
+      now())
   </insert>
   <insert id="insertSelective" parameterType="com.neuedu.busines.pojo.Cart" >
     insert into neuedu_cart
@@ -132,4 +132,16 @@
     select id, user_id, product_id, quantity, checked, create_time, update_time
     from neuedu_cart where user_id=#{userId} and product_id=#{productId}
   </select>
+  <select id="findCartByUserIdChecked" resultMap="BaseResultMap" parameterType="int">
+    select id, user_id, product_id, quantity, checked, create_time, update_time
+    from neuedu_cart where user_id=#{userId} and checked=1
+  </select>
+
+  <delete id="deleteBatchCart" parameterType="list">
+    delete from neuedu_product
+    where id in
+    <foreach collection="cartList" item="cart" open="(" close=")" separator=",">
+      #{cart.id}
+    </foreach>
+  </delete>
 </mapper>

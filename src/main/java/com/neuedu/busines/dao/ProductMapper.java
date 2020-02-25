@@ -53,4 +53,9 @@ public interface ProductMapper {
                                           @Param("pageSize") Integer pageSize,
                                           @Param("pageNum") Integer pageNum,
                                           @Param("orderby") String orderby);
+
+    /**
+     * 商品扣库存
+     */
+    int reduceStock(@Param("productId") Integer productId,@Param("quantity") Integer stock);
 }

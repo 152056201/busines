@@ -7,6 +7,7 @@ import com.neuedu.busines.common.StatusEnum;
 import com.neuedu.busines.dao.ProductMapper;
 import com.neuedu.busines.pojo.Product;
 import com.neuedu.busines.service.CategoryService;
+import com.neuedu.busines.service.OrderService;
 import com.neuedu.busines.service.ProductService;
 
 import com.neuedu.busines.utils.DateUtil;
@@ -24,6 +25,8 @@ public class ProductServiceImpl implements ProductService {
     private ProductMapper productMapper;
     @Resource
     private CategoryService categoryService;
+    @Resource
+    private OrderService orderService;
 
     @Override
     public ServerResponse saveProduct(Product product) {
@@ -118,6 +121,23 @@ public class ProductServiceImpl implements ProductService {
         }
         ProductDetailsVo productDetailsVo = productDetailsVo(product);
         return ServerResponse.serverResponseBySucess("null", productDetailsVo);
+    }
+
+    @Override
+    public ServerResponse reduceStock(Integer productId, Integer quantity) {
+        if (productId == null && quantity == null) {
+            return ServerResponse.serverResponseByFail(StatusEnum.PARAM_NOT_NULL.getCode(),StatusEnum.PARAM_NOT_NULL.getMsg());
+        }
+        //用乐观锁
+        Product product = productMapper.selectByPrimaryKey(productId);
+        if (product==null){
+            return ServerResponse.serverResponseByFail(StatusEnum.PRODUCT_NOT_EXISTS.getCode(),StatusEnum.PRODUCT_NOT_EXISTS.getMsg());
+        }
+        int i = productMapper.reduceStock(productId, product.getStock() - quantity);
+        if(i<=0){
+            return ServerResponse.serverResponseByFail(StatusEnum.PRODUCE_REDUCE_FAIL.getCode(),StatusEnum.PRODUCE_REDUCE_FAIL.getMsg());
+        }
+        return ServerResponse.serverResponseBySucess();
     }
 
     private ProductDetailsVo productDetailsVo(Product product) {

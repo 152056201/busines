@@ -9,4 +9,6 @@ public interface ProductService {
     ServerResponse listProduct(Integer categoryId,String keyword,Integer pageNum,Integer pageSize,String orderby);
 
     ServerResponse productDetails(Integer id);
+
+    ServerResponse reduceStock(Integer productId,Integer quantity);
 }
