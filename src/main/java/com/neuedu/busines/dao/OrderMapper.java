@@ -3,6 +3,7 @@ package com.neuedu.busines.dao;
 import com.neuedu.busines.pojo.Order;
 
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -22,5 +23,6 @@ public interface OrderMapper {
 
     int updateByPrimaryKey(Order record);
 
+    Order findOrderByNo(@Param("orderNO") Long orderNO);
 
 }

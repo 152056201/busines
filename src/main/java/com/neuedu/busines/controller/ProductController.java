@@ -62,9 +62,6 @@ public class ProductController {
     @RequestMapping("/save.do")
     public ServerResponse save(Product product, HttpSession session) {
         User user = (User) session.getAttribute(Consts.USER);
-        if (user == null) {
-            return ServerResponse.serverResponseByFail(StatusEnum.USER_OUT_LOGIN.getCode(), StatusEnum.USER_OUT_LOGIN.getMsg());
-        }
         if (user.getRole() != RoleEnum.ADMIN.getRole()) {
             return ServerResponse.serverResponseByFail(StatusEnum.NO_AUTHORITY.getCode(), StatusEnum.NO_AUTHORITY.getMsg());
         }

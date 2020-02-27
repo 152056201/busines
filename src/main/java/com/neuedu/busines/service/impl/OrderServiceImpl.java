@@ -36,8 +36,8 @@ public class OrderServiceImpl implements OrderService {
     OrderItemMapper orderItemMapper;
 
     @Override
-    public ServerResponse createOrder(Integer userId, Integer shoppingId) {
-        if (shoppingId == null) {
+    public ServerResponse createOrder(Integer userId, Integer shippingId) {
+        if (shippingId == null) {
             return ServerResponse.serverResponseByFail(StatusEnum.PARAM_NOT_NULL.getCode(), StatusEnum.PARAM_NOT_NULL.getMsg());
         }
         //购物车中已选的商品
@@ -55,7 +55,7 @@ public class OrderServiceImpl implements OrderService {
         }
         //生成订单 并插入到数据库
         List<OrderItem> orderItems = serverResponse.getData();
-        ServerResponse<Order> serverResponse1 = generatorOrder(userId, orderItems, shoppingId);
+        ServerResponse<Order> serverResponse1 = generatorOrder(userId, orderItems, shippingId);
         if (!serverResponse1.isSucess()) {
             return serverResponse1;
         }
@@ -75,8 +75,37 @@ public class OrderServiceImpl implements OrderService {
         }
         //8.前端返回OrderVO
 
-        OrderVO orderVO= assemableOrderVO(order,orderItems,shoppingId);
-        return ServerResponse.serverResponseBySucess(null,orderVO);
+        OrderVO orderVO = assemableOrderVO(order, orderItems, shippingId);
+        return ServerResponse.serverResponseBySucess(null, orderVO);
+    }
+
+    @Override
+    public ServerResponse cancel(Long orderNO) {
+        if (orderNO == null) {
+            return ServerResponse.serverResponseByFail(StatusEnum.PARAM_NOT_NULL.getCode(), StatusEnum.PARAM_NOT_NULL.getMsg());
+        }
+        Order orderByNo = orderMapper.findOrderByNo(orderNO);
+        if (orderByNo == null) {
+            return ServerResponse.serverResponseByFail(StatusEnum.ORDER_NOT_EXITIS.getCode(), StatusEnum.ORDER_NOT_EXITIS.getMsg());
+        }
+        if (orderByNo.getStatus() != Consts.OrderStatusEnum.UNPAY.getStatus()) {
+            return ServerResponse.serverResponseByFail(StatusEnum.ORDER_HAS_PAY.getCode(), StatusEnum.ORDER_HAS_PAY.getMsg());
+        }
+        orderByNo.setStatus(Consts.OrderStatusEnum.CANCELED.getStatus());
+        int i = orderMapper.updateByPrimaryKey(orderByNo);
+        if(i<=0){
+            return ServerResponse.serverResponseByFail(StatusEnum.ORDER_CANCEL_FAIL.getCode(),StatusEnum.ORDER_CANCEL_FAIL.getMsg());
+        }
+        List<OrderItem> orderItems = orderItemMapper.selectOrderItemsByOrderNO(orderNO);
+        for (OrderItem orderItem : orderItems){
+            Integer quantity = orderItem.getQuantity();
+            Integer productId = orderItem.getProductId();
+            ServerResponse serverResponse = productService.updateStock(productId, quantity, 1);
+            if(!serverResponse.isSucess()){
+                return ServerResponse.serverResponseByFail(StatusEnum.PRODUCT_UPDATE_FAIL.getCode(),StatusEnum.PRODUCT_UPDATE_FAIL.getMsg());
+            }
+        }
+        return ServerResponse.serverResponseBySucess();
     }
 
     private ServerResponse assemableOrderItemList(List<Cart> cartList, Integer userId) {
@@ -125,7 +154,7 @@ public class OrderServiceImpl implements OrderService {
         order.setOrderNo(createOrderId());
         //将订单落库
         int insert = orderMapper.insert(order);
-        if (insert > 0) {
+        if (insert <= 0) {
             return ServerResponse.serverResponseByFail(StatusEnum.ORDER_CREATE_FAIL.getCode(), StatusEnum.ORDER_CREATE_FAIL.getMsg());
         }
         return ServerResponse.serverResponseBySucess(null, order);
@@ -157,7 +186,7 @@ public class OrderServiceImpl implements OrderService {
             Integer productId = orderItem.getProductId();
             Integer quantity = orderItem.getQuantity();
             //根据商品ID减库存
-            ServerResponse serverResponse = productService.reduceStock(productId, quantity);
+            ServerResponse serverResponse = productService.updateStock(productId, quantity,0);
             if (!serverResponse.isSucess()) {
                 return serverResponse;
             }
@@ -173,7 +202,7 @@ public class OrderServiceImpl implements OrderService {
         return serverResponse;
     }
 
-    private OrderVO assemableOrderVO(Order order,List<OrderItem> orderItems,Integer shippingId) {
+    private OrderVO assemableOrderVO(Order order, List<OrderItem> orderItems, Integer shippingId) {
         OrderVO orderVO = new OrderVO();
         orderVO.setOrderNo(order.getOrderNo());
         orderVO.setStatus(order.getStatus());
@@ -184,23 +213,24 @@ public class OrderServiceImpl implements OrderService {
         orderVO.setCreateTime(DateUtil.date2Str(order.getCreateTime()));
         orderVO.setShippingId(shippingId);
 
-        List<OrderItemVO> orderItemVOList=new ArrayList<>();
+        List<OrderItemVO> orderItemVOList = new ArrayList<>();
 
-        for(OrderItem orderItem:orderItems){
-            OrderItemVO orderItemVO=convertOrderItemVO(orderItem);
+        for (OrderItem orderItem : orderItems) {
+            OrderItemVO orderItemVO = convertOrderItemVO(orderItem);
             orderItemVOList.add(orderItemVO);
         }
         orderVO.setOrderItemVOList(orderItemVOList);
         return orderVO;
     }
+
     /**
      * orderItem-->orderItemvo
-     * */
-    private OrderItemVO convertOrderItemVO(OrderItem orderItem){
-        if(orderItem==null){
+     */
+    private OrderItemVO convertOrderItemVO(OrderItem orderItem) {
+        if (orderItem == null) {
             return null;
         }
-        OrderItemVO orderItemVO=new OrderItemVO();
+        OrderItemVO orderItemVO = new OrderItemVO();
 
         orderItemVO.setOrderNo(orderItem.getOrderNo());
         orderItemVO.setCurrentUnitPrice(orderItem.getCurrentUnitPrice());

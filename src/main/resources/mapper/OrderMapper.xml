@@ -27,6 +27,12 @@
     from neuedu_order
     where id = #{id,jdbcType=INTEGER}
   </select>
+  <select id="findOrderByNo" resultMap="BaseResultMap" parameterType="Long" >
+    select
+    <include refid="Base_Column_List" />
+    from neuedu_order
+    where id = #{id,jdbcType=INTEGER}
+  </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     delete from neuedu_order
     where id = #{id,jdbcType=INTEGER}
@@ -193,7 +199,7 @@
       end_time = #{endTime,jdbcType=TIMESTAMP},
       close_time = #{closeTime,jdbcType=TIMESTAMP},
       create_time = #{createTime,jdbcType=TIMESTAMP},
-      update_time = #{updateTime,jdbcType=TIMESTAMP}
+      update_time = now()
     where id = #{id,jdbcType=INTEGER}
   </update>
 </mapper>

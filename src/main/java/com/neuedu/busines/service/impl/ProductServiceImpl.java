@@ -12,7 +12,6 @@ import com.neuedu.busines.service.ProductService;
 
 import com.neuedu.busines.utils.DateUtil;
 import com.neuedu.busines.vo.ProductDetailsVo;
-import org.joda.time.DateTimeUtils;
 import org.springframework.stereotype.Service;
 import com.neuedu.busines.vo.ProductVoList;
 
@@ -124,18 +123,18 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public ServerResponse reduceStock(Integer productId, Integer quantity) {
+    public ServerResponse updateStock(Integer productId, Integer quantity, int type) {
         if (productId == null && quantity == null) {
-            return ServerResponse.serverResponseByFail(StatusEnum.PARAM_NOT_NULL.getCode(),StatusEnum.PARAM_NOT_NULL.getMsg());
+            return ServerResponse.serverResponseByFail(StatusEnum.PARAM_NOT_NULL.getCode(), StatusEnum.PARAM_NOT_NULL.getMsg());
         }
         //用乐观锁
         Product product = productMapper.selectByPrimaryKey(productId);
-        if (product==null){
-            return ServerResponse.serverResponseByFail(StatusEnum.PRODUCT_NOT_EXISTS.getCode(),StatusEnum.PRODUCT_NOT_EXISTS.getMsg());
+        if (product == null) {
+            return ServerResponse.serverResponseByFail(StatusEnum.PRODUCT_NOT_EXISTS.getCode(), StatusEnum.PRODUCT_NOT_EXISTS.getMsg());
         }
-        int i = productMapper.reduceStock(productId, product.getStock() - quantity);
-        if(i<=0){
-            return ServerResponse.serverResponseByFail(StatusEnum.PRODUCE_REDUCE_FAIL.getCode(),StatusEnum.PRODUCE_REDUCE_FAIL.getMsg());
+        int i = productMapper.reduceStock(productId, type == 0 ? product.getStock() - quantity : product.getStock() + quantity); //type==0减库存，其他加库存
+        if (i <= 0) {
+            return ServerResponse.serverResponseByFail(StatusEnum.PRODUCE_REDUCE_FAIL.getCode(), StatusEnum.PRODUCE_REDUCE_FAIL.getMsg());
         }
         return ServerResponse.serverResponseBySucess();
     }
@@ -151,7 +150,8 @@ public class ProductServiceImpl implements ProductService {
         vo.setPrice(product.getPrice());
         vo.setSubtitle(product.getSubtitle());
         vo.setDetails(product.getDetail());
-        vo.setUpdateTime(product.getUpdateTime());
+        vo.setStock(product.getStock());
+        vo.setUpdateTime(DateUtil.date2Str(product.getUpdateTime()));
         return vo;
     }
 }

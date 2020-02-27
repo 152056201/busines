@@ -57,5 +57,5 @@ public interface ProductMapper {
     /**
      * 商品扣库存
      */
-    int reduceStock(@Param("productId") Integer productId,@Param("quantity") Integer stock);
+    int reduceStock(@Param("productId") Integer productId,@Param("stock") Integer stock);
 }

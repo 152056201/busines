@@ -20,18 +20,12 @@ public class CartController {
     @RequestMapping("list.do")
     public ServerResponse list(HttpSession session) {
         User user = (User) session.getAttribute(Consts.USER);
-        if (user == null) {
-            return ServerResponse.serverResponseByFail(StatusEnum.USER_OUT_LOGIN.getCode(), StatusEnum.USER_OUT_LOGIN.getMsg());
-        }
         return cartService.list(user.getId());
     }
 
     @RequestMapping("add.do")
     public ServerResponse add(Integer productId, Integer count, HttpSession session) {
         User user = (User) session.getAttribute(Consts.USER);
-        if (user == null) {
-            return ServerResponse.serverResponseByFail(StatusEnum.USER_OUT_LOGIN.getCode(), StatusEnum.USER_OUT_LOGIN.getMsg());
-        }
         return cartService.add(user.getId(), productId, count);
     }
 }

@@ -20,11 +20,13 @@ public class OrderController {
     @Autowired
     OrderService orderService;
     @RequestMapping("/create.do")
-    public ServerResponse create(Integer shoppingId,HttpSession session){
+    public ServerResponse create(Integer shippingId,HttpSession session){
         User user =  (User) session.getAttribute(Consts.USER);
-        if(user==null){
-            return ServerResponse.serverResponseByFail(StatusEnum.USER_OUT_LOGIN.getCode(),StatusEnum.USER_OUT_LOGIN.getMsg());
-        }
-        return orderService.createOrder(user.getId(),shoppingId);
+        return orderService.createOrder(user.getId(),shippingId);
+    }
+
+    @RequestMapping("/cancel.do")
+    public ServerResponse cancel(Long orderNo,HttpSession session){
+        return orderService.cancel(orderNo);
     }
 }

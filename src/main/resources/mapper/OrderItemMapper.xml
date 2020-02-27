@@ -24,6 +24,12 @@
     from neuedu_order_item
     where id = #{id,jdbcType=INTEGER}
   </select>
+  <select id="selectOrderItemsByOrderNO" resultMap="BaseResultMap" parameterType="Long" >
+    select
+    <include refid="Base_Column_List" />
+    from neuedu_order_item
+    where order_no = #{orderNO}
+  </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     delete from neuedu_order_item
     where id = #{id,jdbcType=INTEGER}
@@ -39,11 +45,10 @@
       #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP})
   </insert>
   <insert id="insertBatch" parameterType="list" >
-    insert into neuedu_order (user_id, order_no,
-      shipping_id, payment, payment_type,
-      postage, status, payment_time,
-      send_time, end_time, close_time,
-      create_time, update_time)
+    insert into neuedu_order_item (user_id, order_no,
+    product_id, product_name, product_image,
+    current_unit_price, quantity, total_price,
+    create_time, update_time)
     values
     <foreach collection="orderItemList" separator="," item="orderItem">
     (#{orderItem.userId,jdbcType=INTEGER}, #{orderItem.orderNo,jdbcType=BIGINT},

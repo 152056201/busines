@@ -10,5 +10,5 @@ public interface ProductService {
 
     ServerResponse productDetails(Integer id);
 
-    ServerResponse reduceStock(Integer productId,Integer quantity);
+    ServerResponse updateStock(Integer productId,Integer quantity,int type);
 }

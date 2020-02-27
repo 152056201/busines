@@ -17,8 +17,8 @@ public class RedisAspect {
     @Autowired
     private RedisApi redisApi;
     @Pointcut("execution(public * com.neuedu.busines.service.impl.CategoryServiceImpl.get*(..))")
-    public void test(){}
-    @Around("test()")
+    public void category(){}
+    @Around("category()")
     public Object around(ProceedingJoinPoint point){
         StringBuffer buffer = new StringBuffer();
         String className = point.getSignature().getDeclaringType().getName(); //类名

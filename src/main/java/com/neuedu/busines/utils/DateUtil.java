@@ -6,7 +6,7 @@ import org.joda.time.format.DateTimeFormat;
 import java.util.Date;
 
 public class DateUtil {
-    public  static final  String  STANDARD="yyyy-MM-dd mm:HH:ss";
+    public  static final  String  STANDARD="yyyy-MM-dd HH:mm:ss";
 
     /**
      * 将时间DATE类型的时间转成字符串

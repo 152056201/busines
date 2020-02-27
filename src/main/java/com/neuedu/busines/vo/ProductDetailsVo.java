@@ -22,6 +22,6 @@ public class ProductDetailsVo {
     private String mainImage;
     private String subImages;
     private Integer stock;
-    private Date createTime;
-    private Date updateTime;
+    private String createTime;
+    private String updateTime;
 }

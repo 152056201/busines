@@ -128,7 +128,7 @@
   <select id="totalCountByUnchecked" parameterType="int" resultType="int">
     select count(*) from neuedu_cart where user_id=#{userId} and checked=0
   </select>
-  <select id="findCartByUseridAndProductId" resultType="cart" resultMap="BaseResultMap">
+  <select id="findCartByUseridAndProductId" parameterType="map" resultMap="BaseResultMap">
     select id, user_id, product_id, quantity, checked, create_time, update_time
     from neuedu_cart where user_id=#{userId} and product_id=#{productId}
   </select>

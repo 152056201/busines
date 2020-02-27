@@ -23,9 +23,6 @@ public class CategoryController {
     public ServerResponse addCate(@RequestParam(value = "parentId",required = false) Integer parentId,
                                   @RequestParam("name") String name, HttpSession session) {
         User user =  (User) session.getAttribute(Consts.USER);
-        if(user==null){
-            return ServerResponse.serverResponseByFail(StatusEnum.USER_OUT_LOGIN.getCode(),StatusEnum.USER_OUT_LOGIN.getMsg());
-        }
         if(user.getRole() != RoleEnum.ADMIN.getRole()){
             return ServerResponse.serverResponseByFail(StatusEnum.NO_AUTHORITY.getCode(),StatusEnum.NO_AUTHORITY.getMsg());
         }
@@ -37,9 +34,6 @@ public class CategoryController {
                                           @RequestParam("categoryName") String categoryName,
                                           HttpSession session){
         User user = (User) session.getAttribute(Consts.USER);
-        if(user==null){
-            return ServerResponse.serverResponseByFail(StatusEnum.USER_OUT_LOGIN.getCode(),StatusEnum.USER_OUT_LOGIN.getMsg());
-        }
         if(user.getRole()!=RoleEnum.ADMIN.getRole()){
             return ServerResponse.serverResponseByFail(StatusEnum.NO_AUTHORITY.getCode(),StatusEnum.NO_AUTHORITY.getMsg());
         }

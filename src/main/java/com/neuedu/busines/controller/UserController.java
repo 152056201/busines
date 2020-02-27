@@ -54,9 +54,6 @@ public class UserController {
                                      String question,
                                      String answer, User user, HttpSession session){
         user = (User)session.getAttribute(Consts.USER);
-        if(user==null){
-            return ServerResponse.serverResponseByFail(StatusEnum.USER_OUT_LOGIN.getCode(),StatusEnum.USER_OUT_LOGIN.getMsg());
-        }
         ServerResponse serverResponse = userService.updateInfo(username,email,phone,question,answer);
         return serverResponse;
     }

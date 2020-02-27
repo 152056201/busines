@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -49,6 +50,8 @@ public class CartServiceImpl implements CartService {
             newCart.setProductId(productId);
             newCart.setChecked(Consts.CartProductCheckEnum.CHECKED.getCheck());
             newCart.setQuantity(count);
+            newCart.setCreateTime(new Date());
+            newCart.setUpdateTime(new Date());
             int insert = cartMapper.insert(newCart);
             if (insert <= 0) {
                 return ServerResponse.serverResponseByFail(StatusEnum.PRODUCT_ADD_CART_FAIL.getCode(), StatusEnum.PRODUCT_ADD_CART_FAIL.getMsg());
@@ -66,7 +69,7 @@ public class CartServiceImpl implements CartService {
             }
         }
     }
-
+    //判断商品状态是否选中
     @Override
     public ServerResponse checked(Integer userId) {
         if (userId == null) {
@@ -103,11 +106,11 @@ public class CartServiceImpl implements CartService {
             productVo.setUserId(cart.getUserId());
             productVo.setProductChecked(cart.getChecked());
             productVo.setProductId(cart.getProductId());
-            ServerResponse serverResponse = productService.productDetails(cart.getProductId());
+            ServerResponse<ProductDetailsVo> serverResponse = productService.productDetails(cart.getProductId());
             if (!serverResponse.isSucess()) {
                 continue;
             }
-            ProductDetailsVo productDetailsVo = (ProductDetailsVo) serverResponse.getData();
+            ProductDetailsVo productDetailsVo = serverResponse.getData();
             productVo.setProductMainImage(productDetailsVo.getMainImage());
             productVo.setProductName(productDetailsVo.getName());
             productVo.setProductPrice(productDetailsVo.getPrice());

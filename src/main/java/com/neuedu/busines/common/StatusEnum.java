@@ -35,6 +35,10 @@ public enum StatusEnum {
     ORDERITEM_CREATE_FAIL(116,"订单明细创建失败"),
     PRODUCE_REDUCE_FAIL(117,"商品扣库存失败"),
     CART_CLEAR_FAIL(118,"购物车清空失败"),
+    ORDER_NOT_EXITIS(119,"订单不存在"),
+    ORDER_HAS_PAY(121,"订单已付款，无法取消"),
+    ORDER_CANCEL_FAIL(122,"订单取消失败"),
+    ADDRESS_ADD_FAIL(123,"添加地址失败")
     ;
     private int code;
 

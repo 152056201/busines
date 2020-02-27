@@ -10,4 +10,8 @@ public interface OrderService {
      * @return
      */
     ServerResponse createOrder(Integer userId,Integer shoppingId);
+    /**
+     * 取消订单
+     */
+    ServerResponse cancel(Long orderNO);
 }
