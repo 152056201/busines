@@ -10,6 +10,7 @@ import java.util.List;
 @NoArgsConstructor
 @Data
 public class OrderVO {
+    private Integer userId;
     private Long orderNo;
     private BigDecimal payment;
     private Integer paymentType;

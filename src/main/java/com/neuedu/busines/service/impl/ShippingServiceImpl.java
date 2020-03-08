@@ -12,12 +12,13 @@ import org.springframework.stereotype.Service;
 public class ShippingServiceImpl implements ShippingService {
     @Autowired
     ShippingMapper shippingMapper;
+
     @Override
     public ServerResponse add(Shipping shipping) {
         int insert = shippingMapper.insert(shipping);
-        if(insert<=0){
-            return ServerResponse.serverResponseByFail(StatusEnum.ADDRESS_ADD_FAIL.getCode(),StatusEnum.ADDRESS_ADD_FAIL.getMsg());
+        if (insert <= 0) {
+            return ServerResponse.serverResponseByFail(StatusEnum.ADDRESS_ADD_FAIL.getCode(), StatusEnum.ADDRESS_ADD_FAIL.getMsg());
         }
-        return ServerResponse.serverResponseBySucess(null,shipping.getId());
+        return ServerResponse.serverResponseBySucess(null, shipping.getId());
     }
 }

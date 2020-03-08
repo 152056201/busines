@@ -1,5 +1,6 @@
 package com.neuedu.busines.controller;
 
+import com.neuedu.busines.annotation.AutoIdCompoment;
 import com.neuedu.busines.common.Consts;
 import com.neuedu.busines.common.ServerResponse;
 import com.neuedu.busines.common.StatusEnum;
@@ -19,14 +20,16 @@ import javax.servlet.http.HttpSession;
 public class OrderController {
     @Autowired
     OrderService orderService;
+
+    @AutoIdCompoment
     @RequestMapping("/create.do")
-    public ServerResponse create(Integer shippingId,HttpSession session){
-        User user =  (User) session.getAttribute(Consts.USER);
-        return orderService.createOrder(user.getId(),shippingId);
+    public ServerResponse create(Integer shippingId, HttpSession session) {
+        User user = (User) session.getAttribute(Consts.USER);
+        return orderService.createOrder(user.getId(), shippingId);
     }
 
     @RequestMapping("/cancel.do")
-    public ServerResponse cancel(Long orderNo,HttpSession session){
+    public ServerResponse cancel(Long orderNo, HttpSession session) {
         return orderService.cancel(orderNo);
     }
 }

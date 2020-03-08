@@ -5,11 +5,11 @@ import java.security.NoSuchAlgorithmException;
 
 /**
  * MD5加密工具类
- * */
+ */
 public class MD5Utils {
     // 全局数组
-    private final static String[] strDigits = { "0", "1", "2", "3", "4", "5",
-            "6", "7", "8", "9", "a", "b", "c", "d", "e", "f" };
+    private final static String[] strDigits = {"0", "1", "2", "3", "4", "5",
+            "6", "7", "8", "9", "a", "b", "c", "d", "e", "f"};
 
     public MD5Utils() {
     }
@@ -44,15 +44,15 @@ public class MD5Utils {
         }
         return sBuffer.toString();
     }
+
     /**
      * 加密
-     *
-     * */
+     */
     public static String getMD5Code(String strObj) {
         String resultString = null;
         try {
             //加盐值的MD5
-            resultString = new String(strObj+"businesssdafaqj23ou89ZXcj@#$@#$#@KJdjklj;D../dSF.,");
+            resultString = new String(strObj + "businesssdafaqj23ou89ZXcj@#$@#$#@KJdjklj;D../dSF.,");
             MessageDigest md = MessageDigest.getInstance("MD5");
             // md.digest() 该函数返回值为存放哈希值结果的byte数组
             resultString = byteToString(md.digest(resultString.getBytes()));

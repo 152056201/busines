@@ -6,6 +6,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Component;
 
+import java.util.Date;
 import java.util.List;
 
 @Component
@@ -24,5 +25,6 @@ public interface OrderMapper {
     int updateByPrimaryKey(Order record);
 
     Order findOrderByNo(@Param("orderNO") Long orderNO);
-
+    int updateOrder(@Param("orderNo")Long orderNo,
+                    @Param("payTime") Date payTime, @Param("status") Integer orderStatus);
 }

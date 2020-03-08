@@ -7,6 +7,7 @@ import com.neuedu.busines.common.StatusEnum;
 import com.neuedu.busines.pojo.Product;
 import com.neuedu.busines.pojo.User;
 import com.neuedu.busines.service.ProductService;
+import com.neuedu.busines.utils.FtpService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,6 +19,8 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpSession;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -25,6 +28,8 @@ import java.util.UUID;
 public class ProductController {
     @Autowired
     private ProductService productService;
+    @Autowired
+    private FtpService ftpService;
     @Value("${upload.path}")
     private String uploadPath;
 
@@ -32,6 +37,7 @@ public class ProductController {
      * @param file 待上传的文件 pic和表单的name一致
      * @return
      */
+    @RequestMapping("/upload")
     public ServerResponse upload(@RequestParam("pic") MultipartFile file) {
         if (file == null) {
             return null;
@@ -51,6 +57,21 @@ public class ProductController {
         try {
             //将文件写入磁盘
             file.transferTo(file1);
+            List<File> files = new ArrayList<>();
+            files.add(file1);
+            int retry = 3;
+            boolean img = false;
+            while (retry-->0){
+                img = ftpService.uploadFile("img", files);
+                if (img){
+                    break;
+                }
+            }
+            if(!img){
+                return ServerResponse.serverResponseByFail(StatusEnum.PHOTO_UPLOAD_FTP_FAIL.getCode(),StatusEnum.PHOTO_UPLOAD_FTP_FAIL.getMsg());
+            }
+            //删除本地文件
+            file1.delete();
             return ServerResponse.serverResponseBySucess(null, newName);
         } catch (IOException e) {
             e.printStackTrace();
@@ -71,23 +92,25 @@ public class ProductController {
 
     /**
      * 按条件查询
+     *
      * @param categoryId 类别ID
-     * @param keyword 关键字
-     * @param pageSize 第几页
-     * @param pageNum 每页显示几条
-     * @param orderby 按条件分组
+     * @param keyword    关键字
+     * @param pageSize   第几页
+     * @param pageNum    每页显示几条
+     * @param orderby    按条件分组
      * @return
      */
     @RequestMapping("/list.do")
-    public ServerResponse list(@RequestParam(required = false,defaultValue = "-1") Integer categoryId,
-                               @RequestParam(required = false,defaultValue = "")String keyword,
-                               @RequestParam(required = false,defaultValue = "1") Integer pageNum,
-                               @RequestParam(required = false,defaultValue = "10")Integer pageSize,
-                               @RequestParam(required = false,defaultValue = "")String orderby){
+    public ServerResponse list(@RequestParam(required = false, defaultValue = "-1") Integer categoryId,
+                               @RequestParam(required = false, defaultValue = "") String keyword,
+                               @RequestParam(required = false, defaultValue = "1") Integer pageNum,
+                               @RequestParam(required = false, defaultValue = "10") Integer pageSize,
+                               @RequestParam(required = false, defaultValue = "") String orderby) {
         return productService.listProduct(categoryId, keyword, pageNum, pageSize, orderby);
     }
+
     @RequestMapping("/detail.do")
-    public ServerResponse details(Integer id){
+    public ServerResponse details(Integer id) {
         return productService.productDetails(id);
     }
 }

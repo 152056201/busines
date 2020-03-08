@@ -11,8 +11,9 @@ import javax.annotation.Resource;
 public class RedisController {
     @Resource
     private RedisApi redisApi;
+
     @RequestMapping("redis")
-    public String set(){
+    public String set() {
         String set = redisApi.set("yuanhao", "hello");
         return set;
     }

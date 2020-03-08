@@ -138,7 +138,7 @@
   </select>
 
   <delete id="deleteBatchCart" parameterType="list">
-    delete from neuedu_product
+    delete from neuedu_cart
     where id in
     <foreach collection="cartList" item="cart" open="(" close=")" separator=",">
       #{cart.id}

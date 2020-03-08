@@ -5,6 +5,7 @@ import com.neuedu.busines.common.ServerResponse;
 import com.neuedu.busines.common.StatusEnum;
 import com.neuedu.busines.dao.OrderItemMapper;
 import com.neuedu.busines.dao.OrderMapper;
+import com.neuedu.busines.exception.BusinessException;
 import com.neuedu.busines.pojo.Cart;
 import com.neuedu.busines.pojo.Order;
 import com.neuedu.busines.pojo.OrderItem;
@@ -18,7 +19,9 @@ import com.neuedu.busines.vo.OrderVO;
 import com.neuedu.busines.vo.ProductDetailsVo;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -35,6 +38,8 @@ public class OrderServiceImpl implements OrderService {
     @Autowired
     OrderItemMapper orderItemMapper;
 
+
+    @Transactional
     @Override
     public ServerResponse createOrder(Integer userId, Integer shippingId) {
         if (shippingId == null) {
@@ -65,7 +70,7 @@ public class OrderServiceImpl implements OrderService {
         }
         int i = orderItemMapper.insertBatch(orderItems);
         if (i <= 0) {
-            return ServerResponse.serverResponseByFail(StatusEnum.ORDERITEM_CREATE_FAIL.getCode(), StatusEnum.ORDERITEM_CREATE_FAIL.getMsg());
+            throw new BusinessException(StatusEnum.ORDERITEM_CREATE_FAIL.getMsg(), StatusEnum.ORDERITEM_CREATE_FAIL.getCode());
         }
         //扣库存
         reduceStock(orderItems);
@@ -93,17 +98,46 @@ public class OrderServiceImpl implements OrderService {
         }
         orderByNo.setStatus(Consts.OrderStatusEnum.CANCELED.getStatus());
         int i = orderMapper.updateByPrimaryKey(orderByNo);
-        if(i<=0){
-            return ServerResponse.serverResponseByFail(StatusEnum.ORDER_CANCEL_FAIL.getCode(),StatusEnum.ORDER_CANCEL_FAIL.getMsg());
+        if (i <= 0) {
+            return ServerResponse.serverResponseByFail(StatusEnum.ORDER_CANCEL_FAIL.getCode(), StatusEnum.ORDER_CANCEL_FAIL.getMsg());
         }
         List<OrderItem> orderItems = orderItemMapper.selectOrderItemsByOrderNO(orderNO);
-        for (OrderItem orderItem : orderItems){
+        for (OrderItem orderItem : orderItems) {
             Integer quantity = orderItem.getQuantity();
             Integer productId = orderItem.getProductId();
             ServerResponse serverResponse = productService.updateStock(productId, quantity, 1);
-            if(!serverResponse.isSucess()){
-                return ServerResponse.serverResponseByFail(StatusEnum.PRODUCT_UPDATE_FAIL.getCode(),StatusEnum.PRODUCT_UPDATE_FAIL.getMsg());
+            if (!serverResponse.isSucess()) {
+                return ServerResponse.serverResponseByFail(StatusEnum.PRODUCT_UPDATE_FAIL.getCode(), StatusEnum.PRODUCT_UPDATE_FAIL.getMsg());
             }
+        }
+        return ServerResponse.serverResponseBySucess();
+    }
+
+    @Override
+    public ServerResponse findOrderByOrderNo(Long orderNo) {
+        //step1:参数非空判断
+        if (orderNo == null) {
+            return ServerResponse.serverResponseByFail(StatusEnum.PARAM_NOT_NULL.getCode(), StatusEnum.PARAM_NOT_NULL.getMsg());
+        }
+
+        //step2:根据订单号查询订单
+        Order order = orderMapper.findOrderByNo(orderNo);
+        if (order == null) {
+            return ServerResponse.serverResponseByFail(StatusEnum.ORDER_NOT_EXITIS.getCode(), StatusEnum.ORDER_NOT_EXITIS.getMsg());
+        }
+        List<OrderItem> orderItemList = orderItemMapper.selectOrderItemsByOrderNO(orderNo);
+        OrderVO orderVO = assemableOrderVO(order, orderItemList, order.getShippingId());
+        return ServerResponse.serverResponseBySucess(null, orderVO);
+    }
+
+    @Override
+    public ServerResponse updateOrder(Long orderNo, String payTime, Integer orderStatus) {
+        if (orderNo == null || payTime == null || orderStatus == null) {
+            return ServerResponse.serverResponseByFail(StatusEnum.PARAM_NOT_NULL.getCode(), StatusEnum.PARAM_NOT_NULL.getMsg());
+        }
+        int count = orderMapper.updateOrder(orderNo, DateUtil.str2Date(payTime), orderStatus);
+        if (count <= 0) {
+            return ServerResponse.serverResponseByFail(StatusEnum.ORDER_STATUS_FAIL.getCode(), StatusEnum.ORDER_STATUS_FAIL.getMsg());
         }
         return ServerResponse.serverResponseBySucess();
     }
@@ -186,7 +220,7 @@ public class OrderServiceImpl implements OrderService {
             Integer productId = orderItem.getProductId();
             Integer quantity = orderItem.getQuantity();
             //根据商品ID减库存
-            ServerResponse serverResponse = productService.updateStock(productId, quantity,0);
+            ServerResponse serverResponse = productService.updateStock(productId, quantity, 0);
             if (!serverResponse.isSucess()) {
                 return serverResponse;
             }
@@ -245,4 +279,9 @@ public class OrderServiceImpl implements OrderService {
 
         return orderItemVO;
     }
+    //定时任务，每隔2秒执行一次
+    /*@Scheduled(cron = "0/2 * * * * ?")
+    public void sche(){
+        System.out.println("test sche");
+    }*/
 }

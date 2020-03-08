@@ -1,7 +1,9 @@
 package com.neuedu.busines.dao;
 
 import com.neuedu.busines.pojo.Payinfo;
+import org.apache.ibatis.annotations.Mapper;
 
+@Mapper
 public interface PayinfoMapper {
     int deleteByPrimaryKey(Integer id);
 

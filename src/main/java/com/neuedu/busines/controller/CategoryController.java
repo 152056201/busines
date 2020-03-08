@@ -20,33 +20,36 @@ public class CategoryController {
     CategoryService categoryService;
 
     @RequestMapping("/add_category.do")
-    public ServerResponse addCate(@RequestParam(value = "parentId",required = false) Integer parentId,
+    public ServerResponse addCate(@RequestParam(value = "parentId", required = false) Integer parentId,
                                   @RequestParam("name") String name, HttpSession session) {
-        User user =  (User) session.getAttribute(Consts.USER);
-        if(user.getRole() != RoleEnum.ADMIN.getRole()){
-            return ServerResponse.serverResponseByFail(StatusEnum.NO_AUTHORITY.getCode(),StatusEnum.NO_AUTHORITY.getMsg());
+        User user = (User) session.getAttribute(Consts.USER);
+        if (user.getRole() != RoleEnum.ADMIN.getRole()) {
+            return ServerResponse.serverResponseByFail(StatusEnum.NO_AUTHORITY.getCode(), StatusEnum.NO_AUTHORITY.getMsg());
         }
         ServerResponse serverResponse = categoryService.addCategory(parentId, name);
         return serverResponse;
     }
+
     @RequestMapping("/set_category_name.do")
     public ServerResponse setCategoryName(@RequestParam("categoryId") Integer categoryId,
                                           @RequestParam("categoryName") String categoryName,
-                                          HttpSession session){
+                                          HttpSession session) {
         User user = (User) session.getAttribute(Consts.USER);
-        if(user.getRole()!=RoleEnum.ADMIN.getRole()){
-            return ServerResponse.serverResponseByFail(StatusEnum.NO_AUTHORITY.getCode(),StatusEnum.NO_AUTHORITY.getMsg());
+        if (user.getRole() != RoleEnum.ADMIN.getRole()) {
+            return ServerResponse.serverResponseByFail(StatusEnum.NO_AUTHORITY.getCode(), StatusEnum.NO_AUTHORITY.getMsg());
         }
         ServerResponse serverResponse = categoryService.setCategory(categoryId, categoryName);
         return serverResponse;
     }
+
     @RequestMapping("/get_category.do")
-    public ServerResponse getCategory(@RequestParam("categoryId") Integer categoryId){
+    public ServerResponse getCategory(@RequestParam("categoryId") Integer categoryId) {
         ServerResponse category = categoryService.getCategory(categoryId);
         return category;
     }
+
     @RequestMapping("/get_deep_category.do")
-    public ServerResponse getDeepCategory(@RequestParam("categoryId")Integer categoryId){
+    public ServerResponse getDeepCategory(@RequestParam("categoryId") Integer categoryId) {
         ServerResponse deepCategory = categoryService.getDeepCategory(categoryId);
         return deepCategory;
     }

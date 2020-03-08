@@ -1,0 +1,47 @@
+server:
+  port: 8080
+spring:
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
+    url: jdbc:mysql://localhost:3306/business?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password: yh123
+    initialSize: 5
+    minIdle: 5
+    maxActive: 20
+    maxWait: 60000
+    timeBetweenEvictionRunsMillis: 60000
+    minEvictableIdleTimeMillis: 300000
+    validationQuery: SELECT 1 FROM DUAL
+    testWhileIdle: true
+    testOnBorrow: false
+    testOnReturn: false
+    poolPreparedStatements: true
+mybatis:
+  config-location: classpath:mybatis-config.xml
+  type-aliases-package: com.neuedu.busines.pojo
+  mapper-locations: classpath:mapper/*Mapper.xml
+
+upload:
+  path: D:\upload\temp
+redis:
+  maxTotal: 8
+  maxIdle: 8
+  minIdle: 0
+  blockWhenExhausted: true
+  maxWaitMillis: 10000
+  testOnBorrow: true
+  testOnReturn: true
+  jmxEnabled: true
+  redisHost: 123.56.227.4
+  redisPort: 6379
+  timeout: 1000
+token:
+  timeout: 10
+ftp:
+  host: 123.56.227.4
+  user: ftpuser
+  password: yuanftp
+
+
